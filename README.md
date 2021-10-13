@@ -19,14 +19,14 @@ This is implimentation of firebase realtime database as local database for andro
 - Use JSON structure for storing data
 - Supports List<Integer> & ArrayList<String>
 
-  
+<!--   
 ## Acknowledgements
 
  - [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
  - [Awesome README](https://github.com/matiassingers/awesome-readme)
  - [How to write a Good readme](https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project)
 
-  
+   -->
 ## Deployment / Installation
 
 To impliment this database
