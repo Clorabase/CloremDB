@@ -19,7 +19,7 @@ This is implimentation of firebase realtime database as local database for andro
 - Use JSON structure for storing data
 - Supports List<Integer> & ArrayList<String>
 
-  
+<!--   
 ## Acknowledgements
 
  - [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
@@ -34,7 +34,7 @@ To impliment this database
 ```bash
   npm run deploy
 ```
-
+ -->
 
 ## Usage / Examples
 ### Methods overview
