@@ -28,11 +28,20 @@ This is implimentation of firebase realtime database as local database for andro
 
    -->
 ## Deployment / Installation
-
-To impliment this database
-
-```bash
-  npm run deploy
+ In your project build.gradle
+```groovy
+ allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+In your app build.gradle
+```groovy
+dependencies {
+	        implementation 'com.github.ErrorxCode:CloremDB:v1.0'
+	}
 ```
 
 
