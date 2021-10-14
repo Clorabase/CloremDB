@@ -8,8 +8,7 @@ This is implimentation of firebase realtime database as local database for andro
  does not need to know that stupid SQL queries for just simple CRUD operations.
  This will be the easiest database ever made for android.
 
-
-
+![image](https://instagram.fudr2-1.fna.fbcdn.net/v/t51.2885-15/e15/s640x640/244681217_584295309581460_6281762861824570294_n.jpg?_nc_ht=instagram.fudr2-1.fna.fbcdn.net&_nc_cat=100&_nc_ohc=i3ZgTESlsGoAX8WZ5cf&edm=AJXOVykBAAAA&ccb=7-4&oh=fb3e20f2e11eaeea0b852f5b9eabb7c8&oe=616F5A1C&_nc_sid=9c1db7&ig_cache_key=MjY3OTMyNjMwMDQ5MjgxNjM1MA%3D%3D.2-ccb7-4)
 
 ## Features
 
@@ -19,14 +18,13 @@ This is implimentation of firebase realtime database as local database for andro
 - Use JSON structure for storing data
 - Supports List<Integer> & ArrayList<String>
 
-<!--   
+  
 ## Acknowledgements
 
- - [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
- - [Awesome README](https://github.com/matiassingers/awesome-readme)
- - [How to write a Good readme](https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project)
+ - [What is No-Sql](https://en.wikipedia.org/wiki/NoSQL)
+ - [Javadocs](https://github.com/matiassingers/awesome-readme)
 
-   -->
+  
 ## Deployment / Installation
  In your project build.gradle
 ```groovy
