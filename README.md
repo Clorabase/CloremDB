@@ -20,9 +20,10 @@ This is implimentation of firebase realtime database as local database for andro
 
   
 ## Acknowledgements
-
  - [What is No-Sql](https://en.wikipedia.org/wiki/NoSQL)
- - [Javadocs](https://github.com/matiassingers/awesome-readme)
+	
+## Documentation
+- [Javadocs](https://wwhzfp8wqlzivba0csou4g-on.drv.tw/www.docs.cloremdb/com/clorem/db/package-summary.html)
 
   
 ## Deployment / Installation
@@ -84,7 +85,7 @@ db.commit()
 Finally, commits all the changes made to database.
 
 
-***Note** : Please refer to [javadocs](htt) for detailed information of each method*
+***Note** : Please refer to [javadocs](https://wwhzfp8wqlzivba0csou4g-on.drv.tw/www.docs.cloremdb/com/clorem/db/package-summary.html) for detailed information of each method*
 Alternatively, you can also hover or press ctrl + method name to view javadocs.
 .
 
