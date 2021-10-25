@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="400dp"
+    android:layout_height="150dp">
+
+
+    <TextView
+        android:id="@+id/delete_confirmation_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Do you want to delete this text?"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toTopOf="@+id/delete_dialog_buttons_relative_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+
+    <RelativeLayout
+        android:id="@+id/delete_dialog_buttons_relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="1dp">
+        <Button
+            android:id="@+id/update_demo_text_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:text="Update"
+            android:textStyle="italic"/>
+
+        <Button
+            android:id="@+id/cancel_delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_toLeftOf="@id/perform_delete_button"
+            android:text="No" />
+
+        <Button
+            android:id="@+id/perform_delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="10dp"
+            android:text="Yes" />
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

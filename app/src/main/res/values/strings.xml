@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Clorem DB Demo</string>
+    <string name="demo_string">This is demo item no. </string>
+    <string name="insert_dummy_data">Insert dummy data</string>
+</resources>
