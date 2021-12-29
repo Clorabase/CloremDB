@@ -1,7 +1,7 @@
 
 # CloremDB ~ Firebase as local database
 
-This is implimentation of firebase realtime database as local database for android.
+ This is implimentation of firebase realtime database as local database for android.
  CloremDB stores data in exact way as firebase does i.e in a JSON tree. 
  Yes, this is again a no-sql database that stores data in key-value paires. 
  The main aim of making this database is to make developer life easier. Programmer
@@ -11,6 +11,8 @@ This is implimentation of firebase realtime database as local database for andro
 ![image](https://cdn.educba.com/academy/wp-content/uploads/2019/05/what-is-Nosql-database1.png)
 
 ## Features
+
+**Note: Some major bugs found. Consider using [ClorastoreDB](https://github.com/ErrorxCode/ClorastoreDB) for now.**
 
 - Easy,lightweight and fast
 - Data sorting using queries
