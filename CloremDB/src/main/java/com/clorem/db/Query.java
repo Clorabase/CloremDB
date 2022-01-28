@@ -25,133 +25,183 @@ import java.util.List;
  * This will return us list like this [user1,user2,user3]
  */
 public class Query {
+    private final Node node;
 
-    private final Database database;
-
-    protected Query(Database database) {
-        this.database = database;
+    protected Query(Node node) {
+        this.node = node;
     }
 
     /**
-     * Sort children where the value of the key 'what' is grater then 'then'.
-     * @param what The key as column name for the where claus in SQL
-     * @param then the number which should be grater then the value.
-     * @return list of the sorted keys.
+     * Sort children on the basis this condition
+     * @param what The key like where claus in SQL
+     * @param then The value to check against the key
+     * @return list of parent node (keys) which satisfy the condition.
      */
     public List<String> whereGreater(String what, long then){
+        if (what.startsWith("/"))
+            what = what.substring(1);
+        if (what.split("/").length > 2)
+            throw new CloremDatabaseException("Child path ('what') can only contain at most 1 parent node.",Reasons.REASONS_QUERY_ERROR);
+
         List<String> array = new ArrayList<>();
-        for (String node : database.getChildren()){
-            database.node(node);
-            try {
-                if (database.getInt(what) > then)
-                    array.add(node);
-            } catch (CloremDatabaseException ignored) {}
-            database.back();
+        for (String key : node.getChildren()){
+            if (what.contains("/")){
+                String parentKey = what.split("/")[0];
+                String childKey = what.split("/")[1];
+                if (node.node(key + "/" + parentKey).getNumber(childKey,then) > then)
+                    array.add(key);
+            } else {
+                if (node.node(key).getNumber(what,then) > then)
+                    array.add(key);
+            }
         }
         return array;
     }
 
     /**
-     * Sort children where the value of the key 'what' is smaller then 'then'.
-     * @param what The key as column name for the where claus in SQL
-     * @param then the number which should be smaller then the value.
-     * @return list of the sorted keys.
+     * Sort children on the basis this condition
+     * @param what The key like where claus in SQL
+     * @param then The value to check against the key
+     * @return list of parent node (keys) which satisfy the condition.
      */
     public List<String> whereSmaller(String what, long then){
+        if (what.startsWith("/"))
+            what = what.substring(1);
+        if (what.split("/").length > 2)
+            throw new CloremDatabaseException("Child path ('what') can only contain at most 1 parent node.",Reasons.REASONS_QUERY_ERROR);
+
         List<String> array = new ArrayList<>();
-        for (String node : database.getChildren()){
-            database.node(node);
-            try {
-                if (database.getInt(what) < then)
-                    array.add(node);
-            } catch (CloremDatabaseException ignored) {}
-            database.back();
+        for (String key : node.getChildren()){
+            if (what.contains("/")){
+                String parentKey = what.split("/")[0];
+                String childKey = what.split("/")[1];
+                if (node.node(key + "/" + parentKey).getNumber(childKey,then) < then)
+                    array.add(key);
+            } else {
+                if (node.node(key).getNumber(what,then) < then)
+                    array.add(key);
+            }
         }
         return array;
     }
 
     /**
-     * Sort children where the value of the key 'what' is equal to 'to'.
-     * @param what The key as column name for the where claus in SQL
-     * @param to the number to check equality of the value.
-     * @return list of the sorted keys.
+     * Sort children on the basis this condition
+     * @param what The key like where claus in SQL
+     * @param to The value to check against the key
+     * @return list of parent node (keys) which satisfy the condition.
      */
     public List<String> whereEqual(String what, long to){
+        if (what.startsWith("/"))
+            what = what.substring(1);
+        if (what.split("/").length > 2)
+            throw new CloremDatabaseException("Child path ('what') can only contain at most 1 parent node.",Reasons.REASONS_QUERY_ERROR);
+
         List<String> array = new ArrayList<>();
-        for (String node : database.getChildren()){
-            database.node(node);
-            try {
-                if (database.getInt(what) == to)
-                    array.add(node);
-            } catch (CloremDatabaseException ignored) {}
-            database.back();
+        for (String key : node.getChildren()){
+            if (what.contains("/")){
+                String parentKey = what.split("/")[0];
+                String childKey = what.split("/")[1];
+                if (node.node(key + "/" + parentKey).getNumber(childKey,to) == to)
+                    array.add(key);
+            } else {
+                if (node.node(key).getNumber(what,to) == to)
+                    array.add(key);
+            }
         }
         return array;
     }
 
     /**
-     * Sort children where the value of the key 'what' is grater then 'then'.
-     * @param what The key as column name for the where claus in SQL
-     * @param to the string to check equality of the value.
-     * @param ignoreCase if it has to checked ignoringCases
-     * @return list of the sorted keys.
+     * Sort children on the basis this condition
+     * @param what The key like where claus in SQL
+     * @param to The value to check against the key
+     * @param ignoreCase true to ignore case, false otherwise
+     * @return list of parent node (keys) which satisfy the condition.
      */
     public List<String> whereEqual(String what, String to, boolean ignoreCase){
-        List<String> array = new ArrayList<>();
-        for (String node : database.getChildren()){
-            database.node(node);
-            try {
-                if (ignoreCase)
-                    if (database.getString(what).equalsIgnoreCase(to))
-                        array.add(node);
-                    else
-                        if (database.getString(what).equals(to))
-                            array.add(node);
+        if (what.startsWith("/"))
+            what = what.substring(1);
+        if (what.split("/").length > 2)
+            throw new CloremDatabaseException("Child path ('what') can only contain at most 1 parent node.",Reasons.REASONS_QUERY_ERROR);
 
-            } catch (CloremDatabaseException ignored) {}
-            database.back();
+        List<String> array = new ArrayList<>();
+        for (String key : node.getChildren()) {
+            if (what.contains("/")) {
+                String parentKey = what.split("/")[0];
+                String childKey = what.split("/")[1];
+                String value = node.node(key + "/" + parentKey).getString(childKey, to);
+                if (ignoreCase) {
+                    if (value.equalsIgnoreCase(to))
+                        array.add(key);
+                    else if (value.equals(to))
+                        array.add(key);
+                }
+            } else {
+                String value = node.node(key).getString(what, to);
+                if (ignoreCase) {
+                    if (value.equalsIgnoreCase(to))
+                        array.add(key);
+                    else if (value.equals(to))
+                        array.add(key);
+                }
+            }
         }
         return array;
     }
 
     /**
-     * Sort children where the value of the key 'what' contains 'contains'.
-     * @param what The key as column name for the where claus in SQL
-     * @param contains the string that should contain in the value.
-     * @return list of the sorted keys.
+     * Sort children on the basis this condition
+     * @param what The key like where claus in SQL
+     * @param contains The value to check against the key
+     * @return list of parent node (keys) which satisfy the condition.
      */
     public List<String> whereContains(String what, String contains){
+        if (what.startsWith("/"))
+            what = what.substring(1);
+        if (what.split("/").length > 2)
+            throw new CloremDatabaseException("Child path ('what') can only contain at most 1 parent node.",Reasons.REASONS_QUERY_ERROR);
+
         List<String> array = new ArrayList<>();
-        for (String node : database.getChildren()){
-            database.node(node);
-            try {
-                if (database.getString(what).contains(contains))
-                    array.add(node);
-            } catch (CloremDatabaseException ignored) {}
-            database.back();
+        for (String key : node.getChildren()){
+            if (what.contains("/")){
+                String parentKey = what.split("/")[0];
+                String childKey = what.split("/")[1];
+                if (node.node(key + "/" + parentKey).getString(childKey,childKey).contains(contains))
+                    array.add(key);
+            } else {
+                if (node.node(key).getString(what,contains).contains(contains))
+                    array.add(key);
+            }
         }
         return array;
     }
 
-    public List<String> whereBoolean(String where, boolean is){
+
+    /**
+     * Sort children on the basis this condition
+     * @param what The key like where claus in SQL
+     * @param is The value to check against the key
+     * @return list of parent node (keys) which satisfy the condition.
+     */
+    public List<String> whereBoolean(String what, boolean is){
+        if (what.startsWith("/"))
+            what = what.substring(1);
+        if (what.split("/").length > 2)
+            throw new CloremDatabaseException("Child path ('what') can only contain at most 1 parent node.",Reasons.REASONS_QUERY_ERROR);
+
         List<String> array = new ArrayList<>();
-        for (String node : database.getChildren()){
-            database.node(node);
-            try {
-                if (database.getBoolean(where) == is)
-                    array.add(node);
-            } catch (CloremDatabaseException ignored) {}
-            database.back();
+        for (String key : node.getChildren()){
+            if (what.contains("/")){
+                String parentKey = what.split("/")[0];
+                String childKey = what.split("/")[1];
+                if (node.node(key + "/" + parentKey).getBoolean(childKey,is) == is)
+                    array.add(key);
+            } else {
+                if (node.node(key).getBoolean(what,is) == is)
+                    array.add(key);
+            }
         }
         return array;
-    }
-
-    public List<String> whereGreaterOrEqual(String what, long then_or_to){
-        return whereGreater(what,then_or_to - 1);
-    }
-
-
-    public List<String> whereSmallerOrEqual(String what, long then_or_to){
-        return whereSmaller(what,then_or_to + 1);
     }
 }
