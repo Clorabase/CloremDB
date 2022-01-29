@@ -16,13 +16,14 @@
 
 - Easy,lightweight and fast
 - Data sorting using queries
+- Direct object deserialization
 - Capable of storing almost all primitive datatypes
 - Use JSON structure for storing data
-- Supports List<Integer> & ArrayList<String>
+- Supports List<Integer> & List<String>
 
   
 ## Acknowledgements
- - [What is No-Sql](https://en.wikipedia.org/wiki/NoSQL)
+ - [What is No-Sql](https://en.wikipedia.org/wiki/Key%E2%80%93value_database)
 	
 ## Documentation
 - [Javadocs](https://errorxcode.github.io/docs/clorem/index.html)
@@ -46,156 +47,7 @@ dependencies {
 ```
 
 
-## Usage / Examples
-### Methods overview
-
-```java
-Database db = Clorem.getInstance(this,"demo").getDatabase()
+## It's easy
 ```
-This returns the root node of database.
-
-
-```java
-db.newNode("name")
+Clorem.getInstance().addMyData().commit();
 ```
- Creates a new node in current node i.e root.
-
-
-```java
-db.node("name") 
-```
-Moves to the the node "name" of the current node.
-
-
-
-```java
-db.put("key","valye")
-```
-Puts a new key-value pair in the current node.
-
-
-```java
-db.back()
-```
-Moves one node back from the current node.
-
-
-
-```java
-db.commit()
-```
-Finally, commits all the changes made to database.
-
-
-***Note** : Please refer to [javadocs](https://errorxcode.github.io/docs/clorem/index.html) for detailed information of each method*
-Alternatively, you can also hover or press ctrl + method name to view javadocs.
-.
-
-### Storing data in database.
-This code will save information of contributer in database "demo".
-```java
-Clorem.getInstance(this,"demo").getDatabase()
-        .newNode("contributor")
-        .newNode("Rahil")
-        .put("instagram","@x__coder__x")
-        .put("github","@ErrorxCode")
-        .put("website","xcoder.tk")
-        .back()
-        .newNode("Shubam")
-        .put("instagram","@weshubh")
-        .put("github","@shubhamp98")
-        .put("website","shubhamp98.github.io")
-        .back()
-        .newNode("Anas")
-        .put("instagram","null")
-        .put("github","@anas43950")
-        .put("website","null")
-        .commit();
-```
-This will result in JSON structure like this :
-```json
-{
-  "contributor": {
-    "Anas": {
-      "github": "@anas43950",
-      "website": "null",
-      "instagram": "null"
-    },
-    "Shubam": {
-      "github": "@shubhamp98",
-      "website": "shubhamp98.github.io",
-      "instagram": "@weshubh"
-    },
-    "Rahil": {
-      "github": "@ErrorxCode",
-      "website": "xcoder.tk",
-      "instagram": "@x__coder__x"
-    }
-  }
-}
-```
- *This structure will be considered for every example below*.
-
-What we have done is that first we created a new node named 'contributor' 
-using `newNode("contributor")` method. Then we created another node
-under same node with 3 children [using `put("instagram","null")` ]
-. Since we were in node "Anas", we have to go back to 'contributor' node to
-make another child. For that, we use `back()` method...... Finally we commited it to
-database using `commit()` method.
-
-
-### CRUD Operations
-**Note: First you have to go to the parent node of the child on which you wish to perform operation.*
-#### Create
-lets add the email of rahil, for that first you have to go to "Rahil" node.
-```java
-db.node("contributor")
-    .node("Rahil")
-    .put("email","inbox@xcoder.tk")
-    .commit();
-```
-
-
-#### Read
-lets read the github username of anas, for that first you have to go to "Anas" node.
-```java
-String username = db.node("contributor").node("Anas").getString("github");
-```
-**Note : We only have to commit() when writing to database.*
-
-#### Update
-lets change the instagram username of shubam, for that first you have to go to "Shubam" node.
-```java
-db.node("contributor")
-    .node("Shubam")
-    .put("instagram","new username")
-    .commit();
-```
-
-#### Delete
-lets delete the website of rahil, for that first you have to go to "Rahil" node.
-```java
-db.node("contributor")
-    .node("Rahil")
-    .remove("website")
-    .commit()
-```
-or to delete the whole node,
-```java
-db.node("contributor")
-    .remove("Rahil")
-    .commit()
-```
-
-### Sorting
-
-You can also sort data from database as you do in sqllite. You can run queries on node with some conditions.
-To query, you **first need to go on grandparent node of the child you wish to retrive**.
-For example, if I have to get the name of the user whose username is "weshubh" then, I have to call queries on "contributor" node.
-
-Lets get the name of user whose username contains 'e'.
-```java
-List<String> keys = db.node("contributor").query().whereContains("instagram","e");
-// this will return "Rahil" and "Shubam"
-```
-Similarly you can query for `whereEqual`,`whereSmaller`,`whereGreater` or `whereBoolean`.
