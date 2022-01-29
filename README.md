@@ -12,8 +12,6 @@
 
 ## Features
 
-**Note: Some major bugs found. Consider using [ClorastoreDB](https://github.com/ErrorxCode/ClorastoreDB) for now.**
-
 - Easy,lightweight and fast
 - Data sorting using queries
 - Direct object deserialization
