@@ -25,6 +25,7 @@
 	
 ## Documentation
 - [Javadocs](https://errorxcode.github.io/docs/clorem/index.html)
+- [Guide](https://github.com/ErrorxCode/CloremDB/wiki/Guide)
 
   
 ## Deployment / Installation
