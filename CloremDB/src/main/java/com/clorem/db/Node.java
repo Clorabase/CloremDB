@@ -191,7 +191,7 @@ public class Node {
      */
     public Node putStringList(@NonNull String key, @Nullable List<String> list){
         try {
-            object.put(key,list);
+            object.put(key,new JSONArray(list));
             return this;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -208,7 +208,7 @@ public class Node {
      */
     public Node putIntList(@NonNull String key, @Nullable List<Integer> list){
         try {
-            object.put(key,list);
+            object.put(key,new JSONArray(list));
             return this;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -285,10 +285,11 @@ public class Node {
         try {
             JSONArray array = object.getJSONArray(key);
             for (int i = 0; i < array.length(); i++) {
-                elements.add((String) array.get(i));
+                elements.add(array.getString(i));
             }
         } catch (JSONException e) {
-            throw new CloremDatabaseException(key + " does not hold a list of type 'String'",Reasons.REASONS_INVALID_TYPE);
+            e.printStackTrace();
+            throw new CloremDatabaseException(key + " does not hold a list or of type 'String'",Reasons.REASONS_INVALID_TYPE);
         }
         return elements;
     }
@@ -304,7 +305,7 @@ public class Node {
         try {
             JSONArray array = object.getJSONArray(key);
             for (int i = 0; i < array.length(); i++) {
-                elements.add((int) array.get(i));
+                elements.add((array.getInt(i)));
             }
         } catch (JSONException e) {
             throw new CloremDatabaseException(key + "does not hold a list or a list of type 'int'",Reasons.REASONS_INVALID_TYPE);
