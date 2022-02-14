@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 
 /**
@@ -42,10 +41,9 @@ public class Clorem {
      * @return instance of the class
      */
     public static synchronized Clorem getInstance(Context context, String databaseName){
-        new InetSocketAddress(8000);
         if (instance == null){
             instance = new Clorem();
-            File db = new File("/data/data/" + context.getPackageName() + "/databases",databaseName + ".json");
+            File db = new File(context.getFilesDir(),databaseName + ".json");
             try {
                 if (!db.exists() && !db.createNewFile())
                     throw new CloremDatabaseException("Unknown Error occured while creating file for " + databaseName,Reasons.REASONS_DATABASE_CREATION_ERROR);
@@ -97,7 +95,7 @@ public class Clorem {
 
     /**
      * Preview your database structure in the form of JSON.
-     * @return A JSON string.
+     * @return A human readable JSON string.
      */
     public String getDatabaseAsJson(){
         try {
