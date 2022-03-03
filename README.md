@@ -41,7 +41,7 @@
 In your app build.gradle
 ```groovy
 dependencies {
-	        implementation 'com.github.ErrorxCode:CloremDB:v2.2'
+	        implementation 'com.github.ErrorxCode:CloremDB:v2.5'
 	}
 ```
 
