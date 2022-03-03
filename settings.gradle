@@ -1,8 +1,8 @@
+rootProject.name = "Libraries"
 include ':EasyWidgets'
 include ':FileScrapper'
 include ':PUBG_Utils'
 include ':app'
-rootProject.name = "Libraries"
 include ':EasyPreference'
 include ':PhoneVerification'
 include ':ModernOnboarding'
@@ -11,3 +11,7 @@ include ':EasyInsta'
 include ':ClorastoreDB'
 include ':Clorabase'
 include ':Console'
+include ':EasyYoutube'
+include ':SyncDB'
+include ':InstaBot'
+include ':RestAPI'

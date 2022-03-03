@@ -25,7 +25,8 @@ import java.util.List;
  */
 public class Node {
     protected JSONObject root;
-    private JSONObject object;
+    protected JSONObject object;
+    public String name;
 
     protected Node(File db) {
         try {
@@ -46,9 +47,10 @@ public class Node {
     }
 
 
-    private Node(JSONObject object,JSONObject root){
+    public Node(JSONObject object, JSONObject root, String name){
         this.object = object;
         this.root = root;
+        this.name = name;
     }
 
     /**
@@ -58,7 +60,6 @@ public class Node {
      */
     public Node node(@NonNull String name){
         try {
-            new InetSocketAddress(8000);
             if (name.contains("/")){
                 if (name.startsWith("/"))
                     name = name.substring(1);
@@ -75,7 +76,7 @@ public class Node {
                     Clorem.parents.add(newObject);
                     Clorem.parentsNames.add(node);
                 }
-                return new Node(newObject,root);
+                return new Node(newObject,root,name);
             } else {
                 JSONObject jsonObject = object.optJSONObject(name);
                 if (jsonObject == null){
@@ -84,7 +85,7 @@ public class Node {
                 }
                 Clorem.parents.add(jsonObject);
                 Clorem.parentsNames.add(name);
-                return new Node(jsonObject,root);
+                return new Node(jsonObject,root,name);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -283,9 +284,13 @@ public class Node {
     public List<String> getListString(@NonNull String key){
         List<String> elements = new ArrayList<>();
         try {
-            JSONArray array = object.getJSONArray(key);
-            for (int i = 0; i < array.length(); i++) {
-                elements.add(array.getString(i));
+            JSONArray array = object.optJSONArray(key);
+            if (array == null)
+                return new ArrayList<>();
+            else {
+                for (int i = 0; i < array.length(); i++) {
+                    elements.add(array.getString(i));
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -303,9 +308,13 @@ public class Node {
     public List<Integer> getListInt(String key){
         List<Integer> elements = new ArrayList<>();
         try {
-            JSONArray array = object.getJSONArray(key);
-            for (int i = 0; i < array.length(); i++) {
-                elements.add((array.getInt(i)));
+            JSONArray array = object.optJSONArray(key);
+            if (array == null)
+                return new ArrayList<>();
+            else {
+                for (int i = 0; i < array.length(); i++) {
+                    elements.add(array.getInt(i));
+                }
             }
         } catch (JSONException e) {
             throw new CloremDatabaseException(key + "does not hold a list or a list of type 'int'",Reasons.REASONS_INVALID_TYPE);

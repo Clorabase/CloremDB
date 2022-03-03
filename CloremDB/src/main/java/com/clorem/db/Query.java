@@ -68,7 +68,7 @@ public class Query {
         if (what.startsWith("/"))
             what = what.substring(1);
         if (what.split("/").length > 2)
-            throw new CloremDatabaseException("Child path ('what') can only contain at most 1 parent node.",Reasons.REASONS_QUERY_ERROR);
+            throw new CloremDatabaseException("Child path can only contain at most 1 parent node.",Reasons.REASONS_QUERY_ERROR);
 
         List<String> array = new ArrayList<>();
         for (String key : node.getChildren()){
