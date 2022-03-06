@@ -56,3 +56,9 @@ dependencies {
 ```
 Clorem.getInstance().addMyData().commit();
 ```
+	
+	
+
+## Powered by ❤
+#### [Clorabase](https://clorabase.netlify.app)
+> A account-less platform as a service for android apps. (PaaS)
