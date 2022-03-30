@@ -1,5 +1,5 @@
 
-# CloremDB ~ Firebase as local database
+# CloremDB ~ Firebase Realtime database as local database
 <p align="left">
   <a href="#"><img alt="Version" src="https://img.shields.io/badge/Language-Java-1DA1F2?style=flat-square&logo=java"></a>
   <a href="#"><img alt="Bot" src="https://img.shields.io/badge/Version-2.5-green"></a>
@@ -15,6 +15,10 @@
  This will be the easiest database ever made for android.
 
 ![image](https://cdn.educba.com/academy/wp-content/uploads/2019/05/what-is-Nosql-database1.png)
+
+
+### Warning : ⚠️ Use this database for small size of data. For larger size, use [ClorastoreDB](https://github.com/ErrorxCode/ClorastoreDB)
+See issue #1 for more info
 
 ## Features
 
