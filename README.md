@@ -1,5 +1,5 @@
 
-# CloremDB ~ Firebase Realtime database as local database
+# CloremDB ~ Object-storage database
 <p align="left">
   <a href="#"><img alt="Version" src="https://img.shields.io/badge/Language-Java-1DA1F2?style=flat-square&logo=java"></a>
   <a href="#"><img alt="Bot" src="https://img.shields.io/badge/Version-2.5-green"></a>
@@ -16,9 +16,10 @@
 
 ![image](https://cdn.educba.com/academy/wp-content/uploads/2019/05/what-is-Nosql-database1.png)
 
+## 🎊🎊Now in collabration with [FloraDB](https://github.com/ErrorxCode/FloraDB) 🎊🎊
+Since so far, the old clorem database was using wrong architecture which is not memory efficient and can cause **OutOfMemoryError** (see #1). So
+we have collabrated with **FloraDB** and has completely changed our design and architecture of our database to of that. ***Now it is no longer key-value pair database***
 
-### Warning : ⚠️ Use this database for small size of data. For larger size, use [ClorastoreDB](https://github.com/ErrorxCode/ClorastoreDB)
-See issue #1 for more info
 
 ## Features
 
