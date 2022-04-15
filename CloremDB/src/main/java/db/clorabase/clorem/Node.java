@@ -11,6 +11,7 @@ import org.java.json.JSONException;
 import org.java.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -84,19 +85,26 @@ public class Node {
         commit();
     }
 
-
-    public Node put(@NonNull String key,@NonNull Object pojo){
+    /**
+     * Inserts a object to the database node. Object can be POJO or arraylist of type string or integer.
+     * if the object is of type arraylist but is empty, you will get {@code NullPointerException} or if it is of type other than
+     * supported type, you will get {@code CloremDatabaseException}.
+     * @param key The key of the object.
+     * @param object The object to be inserted.
+     * @return This node.
+     */
+    public Node put(@NonNull String key,@NonNull Object object){
         try {
-            if (pojo instanceof List list){
+            if (object instanceof List list){
                 Class<?> aClass = list.get(0).getClass();
                 if (aClass == String.class)
-                    putStringList(key, (List) list);
+                    this.object.put(key, new JSONArray(list));
                 else if (aClass == Integer.class)
-                    putIntList(key, (List) list);
+                    this.object.put(key, new JSONArray(list));
                 else
                     throw new CloremDatabaseException("Cannot put list of objects of type " + aClass.getName() + " in the database.",Reasons.REASONS_INVALID_TYPE);
             } else
-                object.put(key,new JSONObject(new Gson().toJson(pojo)));
+                this.object.put(key,new JSONObject(new Gson().toJson(object)));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -169,42 +177,18 @@ public class Node {
             throw new CloremDatabaseException("Something horribly gone wrong. This error should not occur is most of the cases, Please create a issue on github regarding this error\n\n---[Stack trace]---\n" + e.getLocalizedMessage(),Reasons.REASONS_UNKNOWN);
         }
     }
-
-
-
+    
+    
     /**
-     * Creates a new list current node. Updates if already exist.
-     * @param key The key to access the list. null to remove existing one.
-     * @param list The list to put.
+     * Puts all the data from the map to the current node.
+     * @param data The map to put.
      * @return The current node
      */
-    public Node putStringList(@NonNull String key, @Nullable List<String> list){
-        try {
-            object.put(key,new JSONArray(list));
-            return this;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new CloremDatabaseException("Something horribly gone wrong. This error should not occur is most of the cases, Please create a issue on github regarding this error\n\n---[Stack trace]---\n" + e.getLocalizedMessage(),Reasons.REASONS_UNKNOWN);
-        }
+    @SuppressWarnings("NewApi")
+    public Node put(@NonNull Map<String,Object> data){
+        data.forEach((key,value) -> object.put(key,value));
+        return this;
     }
-
-
-    /**
-     * Creates a new list current node. Updates if already exist.
-     * @param key The key to access the list. null to remove existing one.
-     * @param list The list to put.
-     * @return The current node
-     */
-    public Node putIntList(@NonNull String key, @Nullable List<Integer> list){
-        try {
-            object.put(key,new JSONArray(list));
-            return this;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new CloremDatabaseException("Something horribly gone wrong. This error should not occur is most of the cases, Please create a issue on github regarding this error\n\n---[Stack trace]---\n" + e.getLocalizedMessage(),Reasons.REASONS_UNKNOWN);
-        }
-    }
-
 
     /**
      * Gets the string from the current node in the database.
@@ -310,6 +294,19 @@ public class Node {
         return elements;
     }
 
+    /**
+     * Gets all the data from the current node in the form of map. This map will not contain any nested node.
+     * @return The map as data.
+     */
+    public Map<String,Object> getData(){
+        Map<String,Object> map = new HashMap<>();
+        for (String key : getChildren()){
+            Object value = object.get(key);
+            if (!(value instanceof JSONObject))
+                map.put(key,object.get(key));
+        }
+        return map;
+    }
 
     /**
      * Get the keys of all the children present in this node
