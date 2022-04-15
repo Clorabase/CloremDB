@@ -16,10 +16,6 @@
 
 ![image](https://cdn.educba.com/academy/wp-content/uploads/2019/05/what-is-Nosql-database1.png)
 
-## 🎊🎊Now in collabration with [FloraDB](https://github.com/ErrorxCode/FloraDB) 🎊🎊
-Since so far, the old clorem database was using wrong architecture which is not memory efficient and can cause **OutOfMemoryError** (see #1). So
-we have collabrated with **FloraDB** and has completely changed our design and architecture of our database to of that. ***Now it is no longer key-value pair database***
-
 
 ## Features
 
