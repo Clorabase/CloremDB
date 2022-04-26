@@ -24,7 +24,7 @@ import java.util.Map;
 public class Node {
     protected JSONObject root;
     protected JSONObject object;
-    public String name;
+    protected String path = "";
 
     protected Node(Map<String, ?> map) {
         object = new JSONObject(map);
@@ -32,10 +32,10 @@ public class Node {
     }
 
 
-    public Node(JSONObject object, JSONObject root, String name){
+    protected Node(JSONObject object, JSONObject root, String path) {
         this.object = object;
         this.root = root;
-        this.name = name;
+        this.path = path;
     }
 
     /**
@@ -44,6 +44,7 @@ public class Node {
      * @return The new node.
      */
     public Node node(@NonNull String name){
+        String path = "";
         try {
             if (name.contains("/")){
                 if (name.startsWith("/"))
@@ -57,15 +58,18 @@ public class Node {
                         newObject = jsonObject;
                     } else
                         newObject = newObject.optJSONObject(node);
+
+                    path += "/" + node;
                 }
-                return new Node(newObject,root,name);
+                return new Node(newObject,root,path);
             } else {
                 JSONObject jsonObject = object.optJSONObject(name);
                 if (jsonObject == null){
                     jsonObject = new JSONObject();
                     object.put(name,jsonObject);
                 }
-                return new Node(jsonObject,root,name);
+                path += "/" + name;
+                return new Node(jsonObject,root,path);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -78,31 +82,33 @@ public class Node {
      * Deletes the current node including its children. You don't need to call commit() after calling this.
      * Any operation performed on the node after calling this method will result in {@code NullPointerException}
      * as this node becomes null when deleted.
+     * @return true if the node is deleted, false when there is no such node.
      */
-    public void delete(@NonNull String name){
+    public boolean delete(@NonNull String name){
+        boolean result = object.has(name);
         object.remove(name);
-        object = null;
         commit();
+        return result;
     }
 
     /**
-     * Inserts a object to the database node. Object can be POJO or arraylist of type string or integer.
-     * if the object is of type arraylist but is empty, you will get {@code NullPointerException} or if it is of type other than
-     * supported type, you will get {@code CloremDatabaseException}.
+     * Inserts a object to the database node. Object can be POJO or arraylist of type string or number.
      * @param key The key of the object.
      * @param object The object to be inserted.
+     * @throws CloremDatabaseException if the object is of type other than supported type.
+     * @throws NullPointerException if the object is of type arraylist but is empty.
      * @return This node.
      */
     public Node put(@NonNull String key,@NonNull Object object){
         try {
             if (object instanceof List list){
-                Class<?> aClass = list.get(0).getClass();
-                if (aClass == String.class)
+                Object aClass = list.get(0);
+                if (aClass instanceof String)
                     this.object.put(key, new JSONArray(list));
-                else if (aClass == Integer.class)
+                else if (aClass instanceof Number)
                     this.object.put(key, new JSONArray(list));
                 else
-                    throw new CloremDatabaseException("Cannot put list of objects of type " + aClass.getName() + " in the database.",Reasons.REASONS_INVALID_TYPE);
+                    throw new CloremDatabaseException("Cannot put list of objects of type " + aClass.getClass().getName() + " in the database.",Reasons.REASONS_INVALID_TYPE);
             } else
                 this.object.put(key,new JSONObject(new Gson().toJson(object)));
         } catch (JSONException e) {
@@ -177,8 +183,8 @@ public class Node {
             throw new CloremDatabaseException("Something horribly gone wrong. This error should not occur is most of the cases, Please create a issue on github regarding this error\n\n---[Stack trace]---\n" + e.getLocalizedMessage(),Reasons.REASONS_UNKNOWN);
         }
     }
-    
-    
+
+
     /**
      * Puts all the data from the map to the current node.
      * @param data The map to put.
@@ -277,8 +283,8 @@ public class Node {
      * @return The list that the key holds, otherwise an empty list but never null.
      */
     @NonNull
-    public List<Integer> getListInt(String key){
-        List<Integer> elements = new ArrayList<>();
+    public List<Number> getListInt(String key){
+        List<Number> elements = new ArrayList<>();
         try {
             JSONArray array = object.optJSONArray(key);
             if (array == null)
@@ -296,7 +302,7 @@ public class Node {
 
     /**
      * Gets all the data from the current node in the form of map. This map will not contain any nested node.
-     * @return The map as data.
+     * @return The map as data or null if the current node has no data.
      */
     public Map<String,Object> getData(){
         Map<String,Object> map = new HashMap<>();
@@ -305,7 +311,7 @@ public class Node {
             if (!(value instanceof JSONObject))
                 map.put(key,object.get(key));
         }
-        return map;
+        return map.size() == 0 ? null : map;
     }
 
     /**
@@ -314,14 +320,63 @@ public class Node {
      */
     public ArrayList<String> getChildren(){
         ArrayList<String> children = new ArrayList<>();
-        for (Iterator<String> it = object.keys(); it.hasNext(); ) {
+        Iterator<String> it = object.keys();
+        while (it.hasNext()) {
             String child = it.next();
             children.add(child);
         }
         return children;
     }
 
+    /**
+     * Gets the path of the current node from database root.
+     * @return The path of the current node.
+     */
+    public String getPath(){
+        return path;
+    }
 
+    /**
+     * Adds a new item to the list. If the key is not present or is not of list, exception will be thrown.
+     * @param key The key of the list.
+     * @param value The value to be added.
+     * @throws CloremDatabaseException if key is invalid
+     */
+    public void addItem(@NonNull String key, @NonNull String value){
+        try {
+            object.getJSONArray(key).put(value);
+        } catch (JSONException e) {
+            throw new CloremDatabaseException("The key " + key + " does not hold a list", Reasons.REASONS_INVALID_TYPE);
+        }
+    }
+
+    /**
+     * Adds a new item to the list. If the key is not present or is not of list, exception will be thrown.
+     * @param key The key of the list.
+     * @param value The value to be added.
+     * @throws CloremDatabaseException if key is invalid
+     */
+    public void addItem(@NonNull String key, @NonNull Number value){
+        try {
+            object.getJSONArray(key).put(value);
+        } catch (JSONException e) {
+            throw new CloremDatabaseException("The key " + key + " does not hold a list", Reasons.REASONS_INVALID_TYPE);
+        }
+    }
+
+    /**
+     * Removes the item from the list. If the key is not present or is not of list, exception will be thrown.
+     * @param key The key of the list.
+     * @param index The index of the item to be removed.
+     * @throws CloremDatabaseException if key is invalid
+     */
+    public void removeItem(@NonNull String key,int index){
+        try {
+            object.getJSONArray(key).remove(index);
+        } catch (JSONException e) {
+            throw new CloremDatabaseException("The key " + key + " does not hold a list", Reasons.REASONS_INVALID_TYPE);
+        }
+    }
 
     /**
      * Use this to run queries on your database. All queries should be run from the parent

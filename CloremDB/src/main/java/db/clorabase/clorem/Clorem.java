@@ -10,11 +10,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
+import java.util.zip.ZipException;
 
 /**
  * Clorem is an android open-source no-SQL database. This is similar to firebase's real-time database
@@ -28,9 +30,11 @@ public class Clorem {
     protected static File DATABASE_FILE;
 
     /**
-     * Use static {@link Clorem#getInstance(File, String) method}
+     * Use static {@link Clorem#getInstance(File, String) method} to get the instance of the database.
+     * Using this constructor will result in {@code NullPointerException}
      */
     private Clorem() {
+
     }
 
     /**
@@ -46,7 +50,7 @@ public class Clorem {
     public static synchronized Clorem getInstance(File directory, String databaseName) {
         if (instance == null) {
             instance = new Clorem();
-            File db = new File(directory, databaseName + ".json");
+            File db = new File(directory, databaseName + ".db");
             try {
                 if (!db.exists() && !db.createNewFile())
                     throw new CloremDatabaseException("Unknown Error occurred while creating file for " + databaseName, Reasons.REASONS_DATABASE_CREATION_ERROR);
@@ -65,13 +69,14 @@ public class Clorem {
      *
      * @return The root node of the database.
      */
-    public Node getDatabase() {
+    public synchronized Node getDatabase() {
         try {
             ObjectInputStream in = new ObjectInputStream(new InflaterInputStream(new FileInputStream(DATABASE_FILE)));
             Map<String,?> map = (Map) in.readObject();
+            in.close();
             return new Node(map);
         } catch (IOException | ClassNotFoundException e) {
-            if (e instanceof EOFException)
+            if (e instanceof EOFException || e instanceof ZipException)
                 return new Node(new HashMap<>());
             else
                 throw new CloremDatabaseException("Database may be corrupted or has been deleted", Reasons.REASONS_DATABASE_CORRUPTED);
@@ -81,28 +86,12 @@ public class Clorem {
     protected static synchronized void commit(JSONObject root) {
         try {
             ObjectOutputStream os = new ObjectOutputStream(new DeflaterOutputStream(new FileOutputStream(DATABASE_FILE)));
-            os.writeObject(asMap(root));
+            os.writeObject(root.toMap());
             os.close();
         } catch (IOException e) {
             e.printStackTrace();
             throw new CloremDatabaseException("Unknown Error occurred while writing to database", Reasons.REASONS_UNKNOWN);
         }
-        instance = null;
-        System.gc();
-    }
-
-    private static Map<String,?> asMap(JSONObject root) {
-        Map<String,Object> map = new HashMap<>();
-        Iterator<String> iterator = root.keys();
-        while (iterator.hasNext()) {
-            String key = iterator.next();
-            Object value = root.opt(key);
-            if (value instanceof JSONObject json)
-                map.put(key, asMap(json));
-            else
-                map.put(key, value);
-        }
-        return map;
     }
 
 
@@ -115,8 +104,7 @@ public class Clorem {
         try {
             return getDatabase().root.toString(3);
         } catch (JSONException e) {
-            e.printStackTrace();
-            throw new CloremDatabaseException("Database is corrupted and cannot be parsed into json", Reasons.REASONS_DATABASE_CORRUPTED);
+            throw new CloremDatabaseException("Database is corrupted or deleted", Reasons.REASONS_DATABASE_CORRUPTED);
         }
     }
 
