@@ -11,6 +11,7 @@ import org.java.json.JSONException;
 import org.java.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.Map;
 /**
  * This class represent a node in the database. A node is like a folder which may contain other folders or files. You can perform all the CRUD
  * operations on a node using this class.
- * See {@link <a href="API Reference & Guide">https://github.com/ErrorxCode/CloremDB</a>} for more information
+ * @see <a href="https://github.com/ErrorxCode/CloremDB">API Reference and Guide</a> for more information
  */
 public class Node {
     protected JSONObject root;
@@ -92,27 +93,33 @@ public class Node {
     }
 
     /**
-     * Inserts a object to the database node. Object can be POJO or arraylist of type string or number.
+     * Inserts a POJO object into the current node.
      * @param key The key of the object.
      * @param object The object to be inserted.
-     * @throws CloremDatabaseException if the object is of type other than supported type.
-     * @throws NullPointerException if the object is of type arraylist but is empty.
      * @return This node.
      */
     public Node put(@NonNull String key,@NonNull Object object){
         try {
-            if (object instanceof List list){
-                Object aClass = list.get(0);
-                if (aClass instanceof String)
-                    this.object.put(key, new JSONArray(list));
-                else if (aClass instanceof Number)
-                    this.object.put(key, new JSONArray(list));
-                else
-                    throw new CloremDatabaseException("Cannot put list of objects of type " + aClass.getClass().getName() + " in the database.",Reasons.REASONS_INVALID_TYPE);
-            } else
-                this.object.put(key,new JSONObject(new Gson().toJson(object)));
+            this.object.put(key,new JSONObject(new Gson().toJson(object)));
         } catch (JSONException e) {
-            e.printStackTrace();
+            throw new CloremDatabaseException("Cannot deserialize object. Make sure it's a POJO",Reasons.REASONS_INVALID_TYPE);
+        }
+        return this;
+    }
+
+    /**
+     * Inserts a non-empty list into the database. The list can be of any generic type.
+     * @param key The key of the list.
+     * @param list The list to be inserted.
+     * @return This node.
+     */
+    public Node put(@NonNull String key,@NonNull List list){
+        try {
+            this.object.put(key,new JSONArray(new Gson().toJson(list,list.get(0).getClass())));
+        } catch (JSONException e) {
+            throw new CloremDatabaseException("Cannot insert list into the database, Make sure that the item of the list are POJO",Reasons.REASONS_INVALID_TYPE);
+        } catch (IndexOutOfBoundsException e){
+            throw new CloremDatabaseException("List is empty",Reasons.REASONS_INVALID_TYPE);
         }
         return this;
     }
@@ -190,7 +197,6 @@ public class Node {
      * @param data The map to put.
      * @return The current node
      */
-    @SuppressWarnings("NewApi")
     public Node put(@NonNull Map<String,Object> data){
         data.forEach((key,value) -> object.put(key,value));
         return this;
@@ -254,48 +260,27 @@ public class Node {
 
 
     /**
-     * Gets the List of type String from the current node in the database.
+     * Gets the List of type 'T' associated with the key.
      * @param key The key of the list.
+     * @param type type of items in the list
      * @return The list that the key holds, otherwise an empty list but never null.
+     * @throws CloremDatabaseException If the list do-not contains items of type 'T'
      */
     @NonNull
-    public List<String> getListString(@NonNull String key){
-        List<String> elements = new ArrayList<>();
+    public <T> List<T> getList(@NonNull String key,Class<T> type){
+        List<T> elements = new ArrayList<>();
         try {
             JSONArray array = object.optJSONArray(key);
             if (array == null)
                 return new ArrayList<>();
             else {
                 for (int i = 0; i < array.length(); i++) {
-                    elements.add(array.getString(i));
+                    elements.add(type.cast(array.getString(i)));
                 }
             }
-        } catch (JSONException e) {
+        } catch (JSONException | ClassCastException e) {
             e.printStackTrace();
             throw new CloremDatabaseException(key + " does not hold a list or of type 'String'",Reasons.REASONS_INVALID_TYPE);
-        }
-        return elements;
-    }
-
-    /**
-     * Gets the List of type Integer from the current node in the database.
-     * @param key The key of the list.
-     * @return The list that the key holds, otherwise an empty list but never null.
-     */
-    @NonNull
-    public List<Number> getListInt(String key){
-        List<Number> elements = new ArrayList<>();
-        try {
-            JSONArray array = object.optJSONArray(key);
-            if (array == null)
-                return new ArrayList<>();
-            else {
-                for (int i = 0; i < array.length(); i++) {
-                    elements.add(array.getInt(i));
-                }
-            }
-        } catch (JSONException e) {
-            throw new CloremDatabaseException(key + "does not hold a list or a list of type 'int'",Reasons.REASONS_INVALID_TYPE);
         }
         return elements;
     }
