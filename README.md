@@ -48,6 +48,10 @@ dependencies {
 	}
 ```
 
+### For android
+You also need to manually add [this](https://github.com/ErrorxCode/CloremDB/blob/main/CloremDB/libs/org-java-json.jar?raw=true) jar as dependency.
+
+	
 
 ## It's easy
 ```
