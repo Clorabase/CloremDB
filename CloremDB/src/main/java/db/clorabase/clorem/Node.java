@@ -366,7 +366,7 @@ public class Node {
         if (array == null)
             throw new CloremDatabaseException("There is no list with key " + key + " in this node.", Reasons.REASONS_NOT_EXISTS);
         else
-            array.put(object);
+            array.put(value);
     }
 
 
