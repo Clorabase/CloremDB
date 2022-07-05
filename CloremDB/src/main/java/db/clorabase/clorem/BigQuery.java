@@ -1,8 +1,7 @@
 package db.clorabase.clorem;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import org.java.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
+
+import port.org.json.JSONObject;
 
 
 /**
@@ -76,7 +77,7 @@ public class BigQuery {
     }
 
     /**
-     * Returns nodes in which 'key' is < then 'value'
+     * Returns nodes in which 'key' is smaller then 'value'
      * @param key The key of the data
      * @param value the value to be checked across
      * @return Array of {@link Node[]} containing matching results
