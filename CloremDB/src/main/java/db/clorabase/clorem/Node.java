@@ -305,7 +305,10 @@ public class Node {
                 return new ArrayList<>();
             else {
                 for (int i = 0; i < array.length(); i++) {
-                    elements.add(type.cast(array.getString(i)));
+                    if (type == String.class || type == int.class || type == boolean.class || type == Number.class){
+                        elements.add(type.cast(array.get(i)));
+                    } else
+                        elements.add(new Gson().fromJson(array.getJSONObject(i).toString(),type));
                 }
             }
         } catch (JSONException | ClassCastException e) {
