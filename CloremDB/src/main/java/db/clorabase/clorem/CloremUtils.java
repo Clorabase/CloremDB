@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 
 public class CloremUtils {
 
@@ -44,7 +45,7 @@ public class CloremUtils {
             for (int i = 0; i < files.length; i++) {
                 objects[i] = readObject(files[i]);
             }
-            return Arrays.asList(objects);
+            return new ArrayList<>(Arrays.asList(objects));
         }
     }
 }
