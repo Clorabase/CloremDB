@@ -1,6 +1,7 @@
 package db.clorabase.clorem;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -33,19 +34,6 @@ public class CloremUtils {
             return object;
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    protected static List<Object> listObjects(File volume){
-        var files = volume.listFiles();
-        if (files == null)
-            throw new RuntimeException("The volume does not exist");
-        else {
-            var objects = new Object[files.length];
-            for (int i = 0; i < files.length; i++) {
-                objects[i] = readObject(files[i]);
-            }
-            return new ArrayList<>(Arrays.asList(objects));
         }
     }
 }

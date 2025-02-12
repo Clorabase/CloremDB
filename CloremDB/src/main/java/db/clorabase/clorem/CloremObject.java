@@ -11,7 +11,6 @@ import java.io.Serializable;
  * @since 1.0
  */
 public interface CloremObject extends Serializable {
-
     String getKey();
     String getVolume();
 }
